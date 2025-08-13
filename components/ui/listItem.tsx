@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Animated, PanResponder, StyleSheet, Text, View } from 'react-native';
+import { Animated, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type ListItemProps = {
   item: { id: number; text: string };
@@ -14,9 +14,13 @@ export default function ListItem({ item, index, onDelete }: ListItemProps) {
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
     onPanResponderMove: (_, gesture) => {
-      if (gesture.dx < 0) translateX.setValue(gesture.dx);
+      if (gesture.dx < 0 && gesture.dx > -100) translateX.setValue(gesture.dx);
     },
     onPanResponderRelease: (_, gesture) => {
+      if (gesture.dx < -100) {
+        console.log('sweet spot hit');
+        return;
+      }
       if (gesture.dx < -150) {
         Animated.timing(translateX, {
           toValue: -500,
@@ -34,13 +38,13 @@ export default function ListItem({ item, index, onDelete }: ListItemProps) {
   });
 
   return (
-    // <View style={styles.itemContainer} {...panResponder.panHandlers}>
-    //   <Text style={styles.item}>{item}</Text>
-    // </View>
     <Animated.View style={{ transform: [{ translateX }] }} {...panResponder.panHandlers}>
       <View style={styles.itemContainer}>
         <Text style={styles.item}>{item.text}</Text>
       </View>
+      <TouchableOpacity onPress={() => onDelete(item)} style={styles.deleteButton}>
+        <Text style={styles.deleteButtonText}>X</Text>
+      </TouchableOpacity>
     </Animated.View>
   );
 }
@@ -62,5 +66,23 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 10,
     shadowColor: '#a08348ff',
+  },
+  deleteButton: {
+    position: 'absolute',
+    width: 100,
+    right: -100,
+
+    backgroundColor: '#ff4d4d',
+    padding: 5,
+    borderRadius: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

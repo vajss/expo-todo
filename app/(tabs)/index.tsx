@@ -6,8 +6,6 @@ import { ItemsContext } from './todoContext';
 export default function TabOneScreen() {
   const { items, deleteItem } = useContext(ItemsContext);
 
-  // const [data, setData] = useState(['item 1', 'item 2', 'item 3', 'item 4']);
-
   useEffect(() => {
     console.log('Items updated:', items);
   }, []);
