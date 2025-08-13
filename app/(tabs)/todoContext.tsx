@@ -19,21 +19,14 @@ export function ItemsProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<{ id: number; text: string }[]>([]);
 
   const addItem = (item: string) => {
-    console.log('Adding item:', item);
     const fullItem = { id: items?.length, text: item };
 
     setItems((prev) => [...prev, fullItem]);
   };
 
   const deleteItem = (item: ItemsType) => {
-    console.log('>> index:', item.id);
-    console.log(items);
     const filteredItems = items.filter((i) => i.id !== item.id);
-    console.log('>> filteredItems:', filteredItems);
     setItems(() => filteredItems);
-
-    console.log('NEW ITREMS:', items);
-    console.log('###################');
   };
 
   return (

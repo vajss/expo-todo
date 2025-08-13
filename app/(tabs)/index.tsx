@@ -1,14 +1,10 @@
 import ListItem from '@/components/ui/listItem';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text } from 'react-native';
 import { ItemsContext } from './todoContext';
 
 export default function TabOneScreen() {
   const { items, deleteItem } = useContext(ItemsContext);
-
-  useEffect(() => {
-    console.log('Items updated:', items);
-  }, []);
 
   return (
     <KeyboardAvoidingView

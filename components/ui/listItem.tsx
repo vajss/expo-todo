@@ -9,33 +9,48 @@ type ListItemProps = {
 
 export default function ListItem({ item, index, onDelete }: ListItemProps) {
   const translateX = useRef(new Animated.Value(0)).current;
+  const translateXValue = useRef(0);
 
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderMove: (_, gesture) => {
-      if (gesture.dx < 0 && gesture.dx > -100) translateX.setValue(gesture.dx);
-    },
-    onPanResponderRelease: (_, gesture) => {
-      if (gesture.dx < -100) {
-        console.log('sweet spot hit');
-        return;
-      }
-      if (gesture.dx < -150) {
-        Animated.timing(translateX, {
-          toValue: -500,
-          duration: 200,
-          useNativeDriver: true,
-        }).start();
-        onDelete(item);
-      } else {
-        Animated.spring(translateX, {
-          toValue: 0,
-          useNativeDriver: true,
-        }).start();
-      }
-    },
+  translateX.addListener(({ value }) => {
+    translateXValue.current = value;
   });
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: (_, gesture) => true,
+      onMoveShouldSetPanResponder: (_, gesture) => {
+        return Math.abs(gesture.dx) > 5;
+      },
+      onPanResponderMove: (_, gesture) => {
+        if (gesture.dx > -100) {
+          translateX.setValue(gesture.dx);
+        }
+      },
+      onPanResponderRelease: (_, gesture) => {
+        if (gesture.dx < -50 && gesture.dx > -150) {
+          Animated.timing(translateX, {
+            toValue: -100,
+            duration: 200,
+            useNativeDriver: true,
+          }).start();
+          return;
+        }
+
+        if (gesture.dx < -150) {
+          Animated.timing(translateX, {
+            toValue: -500,
+            duration: 200,
+            useNativeDriver: true,
+          }).start();
+          onDelete(item);
+        } else {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   return (
     <Animated.View style={{ transform: [{ translateX }] }} {...panResponder.panHandlers}>
