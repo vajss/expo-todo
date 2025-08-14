@@ -9,6 +9,11 @@ dist/
 web-build/
 expo-env.d.ts
 
+# IDE - VSCode
+.vscode/
+.history/*
+.prettierrc
+
 # Native
 .kotlin/
 *.orig.*
